@@ -1,9 +1,11 @@
-using System;
+/**
+ * Copyright (c) 2007-2013, Kaazing Corporation. All rights reserved.
+ */
+
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
-using Newtonsoft.Json;
 
 namespace Kaazing.Robot.Control.Event
 {
@@ -11,15 +13,11 @@ namespace Kaazing.Robot.Control.Event
     {
         public enum Kind
         {
-            PREPARED,
-            STARTED,
-            ERROR,
-            FINISHED
+            PREPARED, STARTED, FINISHED, ERROR
         }
 
         private string _name;
 
-        [JsonProperty(PropertyName = "name")]
         public string Name
         {
             get { return _name; }

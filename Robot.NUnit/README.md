@@ -1,7 +1,6 @@
-robot.cs
+NUnit Extension for Robot Testing
 ========
 
-C# Robot Testing Framework
 NUnit Extension for Robot Testing
 
 Under construction...

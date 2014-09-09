@@ -11,9 +11,24 @@ namespace Kaazing.Robot.Control.Command
 {
     public class PrepareCommand : BaseCommand
     {
+        private string _script;
+
         public override Kind CommandKind
         {
             get { return Kind.PREPARE; }
+        }
+
+        public string Script
+        {
+            get
+            {
+                return _script;
+            }
+
+            set
+            {
+                _script = value;
+            }
         }
     }
 }
