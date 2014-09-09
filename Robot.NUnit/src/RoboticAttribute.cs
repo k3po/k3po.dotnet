@@ -10,6 +10,7 @@ using NUnit.Framework;
 using NUnit.Core;
 using System.IO;
 using Kaazing.Robot.Control;
+using System.Reflection;
 
 namespace Kaazing.Robot.NUnit
 {
@@ -17,13 +18,11 @@ namespace Kaazing.Robot.NUnit
     public class RoboticAttribute : CategoryAttribute, ITestAction
     {
         private string _script;
-        private RoboticLatch _latch;
         private ScriptRunner _scriptRunner;
 
         public RoboticAttribute()
         {
             categoryName = "Robotic";
-            _latch = new RoboticLatch();
         }
 
         /// <summary>
@@ -32,8 +31,15 @@ namespace Kaazing.Robot.NUnit
         /// </summary>
         public string Script
         {
-            get { return _script; }
-            set { _script = value; }
+            get 
+            { 
+                return _script; 
+            }
+
+            set 
+            {
+                _script = Path.ChangeExtension(value, null); ; 
+            }
         }
 
         public void AfterTest(TestDetails testDetails)
@@ -42,7 +48,9 @@ namespace Kaazing.Robot.NUnit
             {
                 _scriptRunner.Abort();
             }
+
             _scriptRunner.Join();
+            
             try
             {
                 Assert.AreEqual(_scriptRunner.ExpectedScript, _scriptRunner.ObservedScript, "Robotic behavior did not match expected");
@@ -57,15 +65,23 @@ namespace Kaazing.Robot.NUnit
 
         public void BeforeTest(TestDetails testDetails)
         {
-            // Read the script file content
-            string expectedScript = File.ReadAllText("Scripts\\" + _script + ".rpt");
-            _scriptRunner = new ScriptRunner(_script, expectedScript, _latch);
+            RobotTestFixtureAttribute fixtureAttribute = Attribute.GetCustomAttribute(testDetails.Method.DeclaringType, typeof(RobotTestFixtureAttribute)) as RobotTestFixtureAttribute;
+            String scriptName = String.Empty;
+            if (fixtureAttribute == null || String.IsNullOrEmpty(fixtureAttribute.ScriptRoot))
+            {
+                string baseDirectory = Path.GetFullPath("Scripts");
+                scriptName = Path.Combine(baseDirectory, _script);
+                scriptName = scriptName.Replace("\\", "/");
+            }
+            else
+            {
+                scriptName = String.Format("{0}/{1}", fixtureAttribute.ScriptRoot, _script);
+            }
+
+            _scriptRunner = new ScriptRunner(scriptName);
 
             // Start the script execution
             _scriptRunner.Start();
-
-            // Wait until all binds ready for incoming connections from actual test
-            _latch.AwaitStartable();
         }
 
         public ActionTargets Targets

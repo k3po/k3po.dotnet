@@ -20,17 +20,16 @@ namespace Kaazing.Robot.Control
         private readonly RobotControl _control;
 
         private readonly string _name;
-        private readonly string _expectedScript;
+        private string _expectedScript;
         private string _observedScript;
         private readonly RoboticLatch _latch;
 
         private volatile Boolean _abortScheduled;
 
-        public ScriptRunner(string name, string expectedScript, RoboticLatch latch)
+        public ScriptRunner(string name)
         {
             _name = name;
-            _expectedScript = expectedScript;
-            _latch = latch;
+            _latch = new RoboticLatch();
 
             // TODO: make the control uri configurable?
             Uri controlUri = new Uri("tcp://localhost:11642");
@@ -47,7 +46,7 @@ namespace Kaazing.Robot.Control
                     _control.Connect();
 
                     // Send PREPARE command
-                    PrepareCommand prepareCommand = new PrepareCommand {Name = _name, Script = _expectedScript};
+                    PrepareCommand prepareCommand = new PrepareCommand {Name = _name};
 
                     _control.WriteCommand(prepareCommand);
 
@@ -75,7 +74,8 @@ namespace Kaazing.Robot.Control
                                     throw new Exception(String.Format("{0}:{1}", errorEvent.Summary, errorEvent.Description));
                                 case CommandEvent.Kind.FINISHED:
                                     FinishedEvent finishedEvent = commandEvent as FinishedEvent;
-                                    _observedScript = finishedEvent.Script;
+                                    _expectedScript = finishedEvent.ExpectedScript;
+                                    _observedScript = finishedEvent.ObservedScript;
                                     _latch.NotifyFinished();
                                     return;
                                 default:
@@ -107,6 +107,9 @@ namespace Kaazing.Robot.Control
                     _control.Disconnect();
                 }
             });
+
+            // Wait until robot server is ready to accept connections
+            _latch.AwaitStartable();
         }
 
         public void Join()

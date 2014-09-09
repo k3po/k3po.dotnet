@@ -57,6 +57,11 @@ namespace Kaazing.Robot.Control
 
         protected override char[] ReadBlock(int length)
         {
+            if (length == 0)
+            {
+                return new char[0];
+            }
+
             if (_networkStream.CanRead)
             {
                 char[] readBuffer = new char[length];

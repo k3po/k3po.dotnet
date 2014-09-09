@@ -74,9 +74,7 @@ namespace Kaazing.Robot.Control
         {
             StringBuilder prepareCommandBuilder = new StringBuilder("PREPARE\n");
             prepareCommandBuilder.AppendFormat("name:{0}\n", prepareCommand.Name);
-            prepareCommandBuilder.AppendFormat("content-length:{0}\n", prepareCommand.Script.Length);
             prepareCommandBuilder.Append("\n");
-            prepareCommandBuilder.Append(prepareCommand.Script);
             Write(prepareCommandBuilder.ToString());
         }
 
@@ -171,7 +169,7 @@ namespace Kaazing.Robot.Control
                 }
             } while (headerLine != String.Empty);
 
-            if (length > 0)
+            if (length >= 0)
             {
                 char[] description = ReadBlock(length);
                 errorEvent.Description = new String(description);
@@ -184,7 +182,7 @@ namespace Kaazing.Robot.Control
         {
             FinishedEvent finishedEvent = new FinishedEvent();
             string headerLine;
-            int length = 0;
+            bool expectedScriptRead = false;
             do
             {
                 headerLine = ReadLine();
@@ -199,7 +197,21 @@ namespace Kaazing.Robot.Control
                             finishedEvent.Name = headerValue;
                             break;
                         case "content-length":
-                            length = Int32.Parse(headerValue);
+                            int length = Int32.Parse(headerValue);
+                            if (length >= 0)
+                            {
+                                char[] payload = ReadBlock(length);
+                                if (!expectedScriptRead)
+                                {
+                                    expectedScriptRead = true;
+                                    finishedEvent.ExpectedScript = new String(payload);
+                                }
+                                else
+                                {
+                                    finishedEvent.ObservedScript = new String(payload);
+                                }
+                                
+                            }
                             break;
                         default:
                             throw new InvalidOperationException(String.Format("Invalid header - '{0}:{1}' while parsing ERROR event", headerName, headerValue));
@@ -207,11 +219,7 @@ namespace Kaazing.Robot.Control
                 }
             } while (headerLine != String.Empty);
 
-            if (length >= 0)
-            {
-                char[] payload = ReadBlock(length);
-                finishedEvent.Script = new String(payload);
-            }
+            
 
             return finishedEvent;
         }

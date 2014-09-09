@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\RoboticAttribute.cs" />
+    <Compile Include="src\RobotTestFixtureAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Robot.Control\Kaazing.Robot.Control.csproj">

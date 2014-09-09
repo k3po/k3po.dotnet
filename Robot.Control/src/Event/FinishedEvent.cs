@@ -11,12 +11,19 @@ namespace Kaazing.Robot.Control.Event
 {
     public class FinishedEvent : CommandEvent
     {
-        private string _script;
+        private string _observedScript;
+        private string _expectedScript;
 
-        public string Script
+        public string ObservedScript
         {
-            get { return _script; }
-            set { _script = value; }
+            get { return _observedScript; }
+            set { _observedScript = value; }
+        }
+
+        public string ExpectedScript
+        {
+            get { return _expectedScript; }
+            set { _expectedScript = value; }
         }
 
         public override CommandEvent.Kind EventKind
