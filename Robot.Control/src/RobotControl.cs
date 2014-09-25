@@ -205,6 +205,9 @@ namespace Kaazing.Robot.Control
                                 {
                                     expectedScriptRead = true;
                                     finishedEvent.ExpectedScript = new String(payload);
+
+                                    // end of expected script
+                                    ReadLine();
                                 }
                                 else
                                 {
