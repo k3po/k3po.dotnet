@@ -5,3 +5,5 @@ build:
   project: Robot.sln
   verbosity: minimal
 deploy: off
+before_build:
+  - nuget restore
