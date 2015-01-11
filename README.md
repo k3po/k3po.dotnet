@@ -1,4 +1,4 @@
-# K3PO .NET client
+# K3PO for .NET
 
 [![Build Status][build-status-image]][build-status]
 [![Issue Stats][pull-requests-image]][pull-requests]
