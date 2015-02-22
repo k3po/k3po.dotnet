@@ -1,0 +1,26 @@
+
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "K3po.Control", "K3po.Control\K3po.Control.csproj", "{4A6999F6-63EA-423E-B968-AD40C9EF67AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "K3po.NUnit", "K3po.NUnit\K3po.NUnit.csproj", "{BC1ECDDD-9744-468A-A59F-A944084583BE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4A6999F6-63EA-423E-B968-AD40C9EF67AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A6999F6-63EA-423E-B968-AD40C9EF67AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A6999F6-63EA-423E-B968-AD40C9EF67AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A6999F6-63EA-423E-B968-AD40C9EF67AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC1ECDDD-9744-468A-A59F-A944084583BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC1ECDDD-9744-468A-A59F-A944084583BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC1ECDDD-9744-468A-A59F-A944084583BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC1ECDDD-9744-468A-A59F-A944084583BE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
