@@ -11,7 +11,7 @@
 [issues-closed-image]: http://www.issuestats.com/github/k3po/k3po.dotnet/badge/issue
 [issues-closed]: http://www.issuestats.com/github/k3po/k3po.dotnet
 
-- C# Robot Testing Framework
-- NUnit Extension for Robot Testing
+- .Net K3PO Testing Framework
+- NUnit Extension for K3PO Testing
 
 Under construction...
