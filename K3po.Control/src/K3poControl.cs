@@ -16,11 +16,11 @@ namespace Kaazing.K3po.Control
     public sealed class K3poControl
     {
         private const string HEADER_PATTERN = @"([a-z\\-]+):([^\n]+)";
+        private const int NEW_LINE = 0x0A;
 
         private Uri _location;
         private IUriConnection _connection;
         private Stream _stream;
-        private StreamReader _streamReader;
 
         public K3poControl(Uri location)
         {
@@ -31,7 +31,6 @@ namespace Kaazing.K3po.Control
         {
             _connection = _location.OpenConnection();
             _stream = _connection.GetStream();
-            _streamReader = new StreamReader(_stream, Encoding.UTF8);
         }
 
         public void Disconnect()
@@ -69,7 +68,7 @@ namespace Kaazing.K3po.Control
 
             CheckConnected();
 
-            String eventKind = _streamReader.ReadLine();
+            String eventKind = ReadLine();
             switch (eventKind)
             {
                 case "PREPARED":
@@ -115,10 +114,10 @@ namespace Kaazing.K3po.Control
         {
             PreparedEvent preparedEvent = new PreparedEvent();
             string headerLine;
-
+            int length = 0;
             do
             {
-                headerLine = _streamReader.ReadLine();
+                headerLine = ReadLine();
                 Match headerMatch = Regex.Match(headerLine, HEADER_PATTERN);
                 if (headerMatch.Success)
                 {
@@ -129,17 +128,19 @@ namespace Kaazing.K3po.Control
                             case "name":
                             break;
                         case "content-length":
-                            int length = Int32.Parse(headerValue);
-                            if (length > 0) {
-                                char[] content = Read(length);
-                                preparedEvent.Script = new String(content);
-                            }
+                            length = Int32.Parse(headerValue);
                             break;
                         default:
                             throw new InvalidOperationException(String.Format("Invalid header - '{0}:{1}' while parsing PREPARED event", headerName, headerValue));
                     }
                 }
             } while (headerLine != String.Empty);
+
+            if (length > 0)
+            {
+                byte[] content = Read(length);
+                preparedEvent.Script = Encoding.UTF8.GetString(content);
+            }
 
             return preparedEvent;
         }
@@ -150,7 +151,7 @@ namespace Kaazing.K3po.Control
             string headerLine;
             do
             {
-                headerLine = _streamReader.ReadLine();
+                headerLine = ReadLine();
                 Match headerMatch = Regex.Match(headerLine, HEADER_PATTERN);
                 if (headerMatch.Success)
                 {
@@ -176,7 +177,7 @@ namespace Kaazing.K3po.Control
             int length = 0;
             do
             {
-                headerLine = _streamReader.ReadLine();
+                headerLine = ReadLine();
                 Match headerMatch = Regex.Match(headerLine, HEADER_PATTERN);
                 if (headerMatch.Success)
                 {
@@ -188,10 +189,6 @@ namespace Kaazing.K3po.Control
                             break;
                         case "content-length":
                             length = Int32.Parse(headerValue);
-                            if (length > 0) {
-                                char[] content = Read(length);
-                                errorEvent.Description = new String(content);
-                            }
                             break;
                         case "summary":
                             errorEvent.Summary = headerValue;
@@ -202,6 +199,12 @@ namespace Kaazing.K3po.Control
                 }
             } while (headerLine != String.Empty);
 
+            if (length > 0)
+            {
+                byte[] content = Read(length);
+                errorEvent.Description = Encoding.UTF8.GetString(content);
+            }
+
             return errorEvent;
         }
 
@@ -209,9 +212,11 @@ namespace Kaazing.K3po.Control
         {
             FinishedEvent finishedEvent = new FinishedEvent();
             string headerLine;
+            int length = 0;
+
             do
             {
-                headerLine = _streamReader.ReadLine();
+                headerLine = ReadLine();
                 Match headerMatch = Regex.Match(headerLine, HEADER_PATTERN);
                 if (headerMatch.Success)
                 {
@@ -222,18 +227,19 @@ namespace Kaazing.K3po.Control
                         case "name":
                             break;
                         case "content-length":
-                            int length = Int32.Parse(headerValue);
-                            if (length >= 0)
-                            {
-                                char[] content = Read(length);
-                                finishedEvent.Script = new String(content);
-                            }
+                            length = Int32.Parse(headerValue);
                             break;
                         default:
                             throw new InvalidOperationException(String.Format("Invalid header - '{0}:{1}' while parsing ERROR event", headerName, headerValue));
                     }
                 }
             } while (headerLine != String.Empty);
+
+            if (length >= 0)
+            {
+                byte[] content = Read(length);
+                finishedEvent.Script = Encoding.UTF8.GetString(content);
+            }
 
             return finishedEvent;
         }
@@ -244,27 +250,38 @@ namespace Kaazing.K3po.Control
             _stream.Write(data, 0, data.Length);
         }
 
-        private char[] Read(int length) {
+        private string ReadLine()
+        {
+            int byteRead = 0;
+            StringBuilder line = new StringBuilder();
+            while ((byteRead = _stream.ReadByte()) != 0x0A)
+            {
+                line.Append(Convert.ToChar(byteRead));
+            }
+            return line.ToString();
+
+        }
+
+        private byte[] Read(int length) {
             if (length == 0)
             {
-                return new char[0];
+                return new byte[0];
             }
 
             if (_stream.CanRead)
             {
-                char[] readBuffer = new char[length];
+                byte[] readBuffer = new byte[length];
                 int bytesRead = 0;
 
                 do
                 {
-                    bytesRead +=_streamReader.ReadBlock(readBuffer, bytesRead, length - bytesRead);
+                    bytesRead += _stream.Read(readBuffer, bytesRead, length - bytesRead);
                 } while (bytesRead != length);
 
                 if (bytesRead != length)
                 {
                     throw new InvalidOperationException(String.Format("Could not read all data from network stream. Bytes Read: {0} is less than the expected length: {1}", bytesRead, length));
                 }
-
                 return readBuffer;
             }
             else

@@ -16,11 +16,10 @@ namespace Kaazing.K3po.Control
             _tcpClient = new TcpClient(host, port);
         }
 
-        public Stream GetStream()
+        public NetworkStream GetStream()
         {
             return _tcpClient.GetStream();
         }
-
 
         public void Close()
         {

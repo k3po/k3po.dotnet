@@ -1,9 +1,14 @@
-
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "K3po.Control", "K3po.Control\K3po.Control.csproj", "{4A6999F6-63EA-423E-B968-AD40C9EF67AF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "K3po.NUnit", "K3po.NUnit\K3po.NUnit.csproj", "{BC1ECDDD-9744-468A-A59F-A944084583BE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{AC50B2FE-CF36-4315-821A-36ADF3063364}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "K3po.NUnit.Sample", "Sample\K3po.NUnit.Sample.csproj", "{DB40D108-183D-46E8-8BAE-B04731B6B73F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,8 +24,15 @@ Global
 		{BC1ECDDD-9744-468A-A59F-A944084583BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC1ECDDD-9744-468A-A59F-A944084583BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC1ECDDD-9744-468A-A59F-A944084583BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB40D108-183D-46E8-8BAE-B04731B6B73F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB40D108-183D-46E8-8BAE-B04731B6B73F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB40D108-183D-46E8-8BAE-B04731B6B73F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB40D108-183D-46E8-8BAE-B04731B6B73F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DB40D108-183D-46E8-8BAE-B04731B6B73F} = {AC50B2FE-CF36-4315-821A-36ADF3063364}
 	EndGlobalSection
 EndGlobal

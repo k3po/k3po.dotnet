@@ -157,17 +157,17 @@ namespace Kaazing.K3po.NUnit
             this._exception = exception;
             if (_prepared.CurrentCount == 1)
             {
-                _prepared.Signal();
+                NotifyPrepared();
             }
 
             if (_startable.CurrentCount == 1)
             {
-                _startable.Signal();
+                NotifyStartable();
             }
 
             if (_finished.CurrentCount == 1)
             {
-                _finished.Signal();
+                NotifyFinished();
             }
         }
 

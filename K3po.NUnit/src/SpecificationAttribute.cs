@@ -28,7 +28,7 @@ namespace Kaazing.K3po.NUnit
 
         public void AfterTest(TestDetails testDetails)
         {
-            // Test could fail due to assertion error or timeout
+            // Test could fail due to assertion error or timeout or when preparing
             if (TestContext.CurrentContext.Result.Status == TestStatus.Failed)
             {
                 // Abort the script execution
@@ -58,9 +58,7 @@ namespace Kaazing.K3po.NUnit
                 String scriptName = String.Empty;
                 if (fixtureAttribute == null || String.IsNullOrEmpty(fixtureAttribute.ScriptRoot))
                 {
-                    string baseDirectory = Path.GetFullPath("Scripts");
-                    scriptName = Path.Combine(baseDirectory, script);
-                    scriptName = scriptName.Replace("\\", "/");
+                    scriptName = script;
                 }
                 else
                 {

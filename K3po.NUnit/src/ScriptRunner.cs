@@ -39,87 +39,92 @@ namespace Kaazing.K3po.NUnit
 
         public void Start()
         {
-            try
+            Task.Factory.StartNew(() =>
             {
-                _control.Connect();
-
-                // Send PREPARE command
-                PrepareCommand prepareCommand = new PrepareCommand { Names = _names };
-
-                _control.WriteCommand(prepareCommand);
-
-                bool abortWritten = false;
-                string expectedScript = null;
-
-                while (true)
+                try
                 {
-                    try
+                    _control.Connect();
+
+                    // Send PREPARE command
+                    PrepareCommand prepareCommand = new PrepareCommand { Names = _names };
+
+                    _control.WriteCommand(prepareCommand);
+
+                    bool abortWritten = false;
+                    string expectedScript = null;
+
+                    while (true)
                     {
-                        ControlEvent controlEvent = _control.ReadEvent(200);
-
-                        switch (controlEvent.EventKind)
+                        try
                         {
-                            case ControlEvent.Kind.PREPARED:
-                                PreparedEvent prepared = controlEvent as PreparedEvent;
-                                expectedScript = prepared.Script;
+                            ControlEvent controlEvent = _control.ReadEvent(200);
 
-                                _latch.NotifyPrepared();
+                            switch (controlEvent.EventKind)
+                            {
+                                case ControlEvent.Kind.PREPARED:
+                                    PreparedEvent prepared = controlEvent as PreparedEvent;
+                                    expectedScript = prepared.Script;
 
-                                _latch.AwaitStartable();
+                                    _latch.NotifyPrepared();
 
-                                if (_abortScheduled && !abortWritten)
-                                {
-                                    SendAbortCommand();
-                                    abortWritten = true;
-                                }
-                                else
-                                {
-                                    StartCommand startCommand = new StartCommand();
-                                    _control.WriteCommand(startCommand);
-                                }
-                                break;
-                            case ControlEvent.Kind.STARTED:
-                                break;
-                            case ControlEvent.Kind.ERROR:
-                                ErrorEvent errorEvent = (ErrorEvent)controlEvent;
-                                throw new Exception(String.Format("{0}:{1}", errorEvent.Summary, errorEvent.Description));
-                            case ControlEvent.Kind.FINISHED:
-                                FinishedEvent finishedEvent = controlEvent as FinishedEvent;
-                                string observedScript = finishedEvent.Script;
-                                _scriptPair = new ScriptPair { ExpectedScript = expectedScript, ObservedScript = observedScript };
-                                _latch.NotifyFinished();
-                                return;
-                            default:
-                                throw new InvalidOperationException("Unsupported event: " + controlEvent.EventKind.ToString());
+                                    _latch.AwaitStartable();
+
+                                    if (_abortScheduled && !abortWritten)
+                                    {
+                                        SendAbortCommand();
+                                        abortWritten = true;
+                                    }
+                                    else
+                                    {
+                                        StartCommand startCommand = new StartCommand();
+                                        _control.WriteCommand(startCommand);
+                                    }
+                                    break;
+                                case ControlEvent.Kind.STARTED:
+                                    break;
+                                case ControlEvent.Kind.ERROR:
+                                    ErrorEvent errorEvent = (ErrorEvent)controlEvent;
+                                    throw new Exception(String.Format("{0}:{1}", errorEvent.Summary, errorEvent.Description));
+                                case ControlEvent.Kind.FINISHED:
+                                    FinishedEvent finishedEvent = controlEvent as FinishedEvent;
+                                    string observedScript = finishedEvent.Script;
+                                    _scriptPair = new ScriptPair { ExpectedScript = expectedScript, ObservedScript = observedScript };
+                                    _latch.NotifyFinished();
+                                    return;
+                                default:
+                                    throw new InvalidOperationException("Unsupported event: " + controlEvent.EventKind.ToString());
+                            }
                         }
-                    }
-                    catch (IOException ex)
-                    {
-                        if (_abortScheduled && !abortWritten)
+                        catch (IOException ex)
                         {
-                            abortWritten = true;
-                            SendAbortCommand();
+                            if (_abortScheduled && !abortWritten)
+                            {
+                                abortWritten = true;
+                                SendAbortCommand();
+                            }
                         }
                     }
                 }
-            }
-            catch (SocketException socketException)
-            {
-                Exception exception = new Exception("Failed to connect. Is the Robot running?", socketException);
-                _latch.NotifyException(exception);
-            }
-            catch (Exception exception)
-            {
-                _latch.NotifyException(exception);
-            }
-            finally
-            {
-                _control.Disconnect();
-            }
+                catch (SocketException socketException)
+                {
+                    Exception exception = new Exception("Failed to connect. Is the Robot running?", socketException);
+                    _latch.NotifyException(exception);
+                }
+                catch (Exception exception)
+                {
+                    _latch.NotifyException(exception);
+                }
+                finally
+                {
+                    _control.Disconnect();
+                }
+            });
         }
 
         public void Join()
         {
+            _latch.NotifyStartable();
+
             // Wait for script to finish
             _latch.AwaitFinished();
         }
