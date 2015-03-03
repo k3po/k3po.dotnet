@@ -55,8 +55,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Sample.licenseheader" />
     <None Include="Scripts\echo.data.rpt" />
-    <None Include="Scripts\connect.then.disconnect.rpt" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

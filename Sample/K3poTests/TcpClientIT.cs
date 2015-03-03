@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using Kaazing.K3po.NUnit;
 using NUnit.Framework;
 using System;
@@ -28,16 +27,6 @@ namespace K3po.NUnit.Sample
     [TestFixture]
     public class TcpClientIT
     {
-        [Test]
-        [Specification("connect.then.disconnect")]
-        public void ShouldConnectAndDisconnect()
-        {
-            TcpClient tcpClient = new TcpClient("localhost", 8000);
-            Assert.IsTrue(tcpClient.Connected);
-            tcpClient.Close();
-            // Assert.IsFalse(tcpClient.Connected);
-        }
-
         [Test]
         [Specification("echo.data")]
         public void ShouldSendAndReceive()
