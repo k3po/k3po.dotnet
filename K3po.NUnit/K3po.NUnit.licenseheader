@@ -1,4 +1,7 @@
-﻿/*
+extensions: designer.cs generated.cs
+extensions: .cs .cpp .h
+
+/*
  * Copyright (c) 2007-2014 Kaazing Corporation. All rights reserved.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -18,26 +21,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace Kaazing.K3po.Control
-{
-    public class PreparedEvent : ControlEvent
-    {
-        private string _script;
-
-        public string Script
-        {
-            get { return _script; }
-            set { _script = value; }
-        }
-
-        public override ControlEvent.Kind EventKind
-        {
-            get { return Kind.PREPARED; }
-        }
-    }
-}
+extensions: .aspx .ascx
+<%-- 
+Sample license text.
+--%>
+extensions: .vb
+'Sample license text.
+extensions:  .xml .config .xsd
+<!--
+Sample license text.
+-->
