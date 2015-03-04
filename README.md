@@ -14,3 +14,18 @@
 - .Net K3PO Testing Framework
 - NUnit Extension for K3PO Testing
 
+
+### Requirement
+
+
+- Visual Studio 2013. The community edition can be downloaded from [here](https://www.visualstudio.com/en-us/products/visual-studio-community-vs.aspx)
+- NUnit 2.6.3
+
+### Steps to run the sample test
+
+- Open K3PO.sln in Visual Studio
+- Build the solution
+- The sample test is available in Sample\K3po.NUnit.Sample project
+- You can use [NUnit Test Adapter](https://visualstudiogallery.msdn.microsoft.com/6ab922d0-21c0-4f06-ab5f-4ecd1fe7175d) to run the NUnit test
+- Before running the test, make sure that the K3PO server is launched. TODO: Detail Description
+
