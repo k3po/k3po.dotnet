@@ -1,9 +1,10 @@
 version: 1.0.{build}
 skip_tags: true
 os: Windows Server 2012 R2
+before_build:
+  - nuget restore
 build:
   project: K3po.sln
   verbosity: minimal
+test: off
 deploy: off
-before_build:
-  - nuget restore
