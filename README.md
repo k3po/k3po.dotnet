@@ -14,4 +14,3 @@
 - .Net K3PO Testing Framework
 - NUnit Extension for K3PO Testing
 
-Under construction...
