@@ -41,3 +41,6 @@ bld/
 
 # nuget stuffs
 packages/
+
+# Don't ignore this file for now until we find a way to pull nunit.core.interfaces as dependency from nuget
+!nunit.core.interfaces.dll
