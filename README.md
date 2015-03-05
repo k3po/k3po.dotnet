@@ -28,8 +28,8 @@
 - The sample test is available in Sample\K3po.NUnit.Sample project
 - You can use [NUnit Test Adapter](https://visualstudiogallery.msdn.microsoft.com/6ab922d0-21c0-4f06-ab5f-4ecd1fe7175d) to run the NUnit test
 - Before running the test, make sure that the K3PO server is launched.
-	- The K3PO server launcher (**Launcher.jar**) is available in folder Sample\K3PO-Launcher
+	- The K3PO server launcher (**K3PO.jar**) is available in folder Sample\K3PO-Launcher
 		- TODO: Add detail description regarding how to get the latest version of K3PO launcher from the repository
 	- Use following command to launch K3PO from the Sample\K3PO-Launcher directory
-		- **java -jar Launcher.jar --scriptpath ..\Scripts**
+		- **java -jar K3PO.jar --scriptpath ..\Scripts**
 
