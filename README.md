@@ -11,7 +11,25 @@
 [issues-closed-image]: http://www.issuestats.com/github/k3po/k3po.dotnet/badge/issue
 [issues-closed]: http://www.issuestats.com/github/k3po/k3po.dotnet
 
-- C# Robot Testing Framework
-- NUnit Extension for Robot Testing
+- .Net K3PO Testing Framework
+- NUnit Extension for K3PO Testing
 
-Under construction...
+
+### Requirement
+
+
+- Visual Studio 2013. The community edition can be downloaded from [here](https://www.visualstudio.com/en-us/products/visual-studio-community-vs.aspx)
+- NUnit 2.6.3
+
+### Steps to run the sample test
+
+- Open K3PO.sln in Visual Studio
+- Build the solution
+- The sample test is available in Sample\K3po.NUnit.Sample project
+- You can use [NUnit Test Adapter](https://visualstudiogallery.msdn.microsoft.com/6ab922d0-21c0-4f06-ab5f-4ecd1fe7175d) to run the NUnit test
+- Before running the test, make sure that the K3PO server is launched.
+	- The K3PO server launcher (**K3PO.jar**) is available in folder Sample\K3PO-Launcher
+		- TODO: Add detail description regarding how to get the latest version of K3PO launcher from the repository
+	- Use following command to launch K3PO from the Sample\K3PO-Launcher directory
+		- **java -jar K3PO.jar --scriptpath ..\Scripts**
+
