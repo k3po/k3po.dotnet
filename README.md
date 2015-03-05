@@ -31,5 +31,5 @@
 	- The K3PO server launcher (**Launcher.jar**) is available in folder Sample\K3PO-Launcher
 		- TODO: Add detail description regarding how to get the latest version of K3PO launcher from the repository
 	- Use following command to launch K3PO from the Sample\K3PO-Launcher directory
-		- **java -jar Launcher.jar --scriptPath ..\Scripts**
+		- **java -jar Launcher.jar --scriptpath ..\Scripts**
 
