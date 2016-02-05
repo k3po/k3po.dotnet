@@ -1,6 +1,6 @@
 ﻿
 /*
- * Copyright (c) 2007-2014 Kaazing Corporation. All rights reserved.
+ * Copyright (c) 2007-2016 Kaazing Corporation. All rights reserved.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -31,6 +31,9 @@ using System.Reflection;
 
 namespace Kaazing.K3po.NUnit
 {
+    /// <summary>
+    /// A K3poRule specifies how a Test using k3po is executed.
+    /// </summary>
     public class K3poRule
     {
         private Latch latch;
@@ -40,10 +43,9 @@ namespace Kaazing.K3po.NUnit
         private Task<ScriptPair> _task;
         private int _timeout = 10000;
 
-        /**
-         * Allocates a new K3poRule.
-         */
-
+        /// <summary>
+        /// Allocates a new K3poRule.
+        /// </summary>
         public K3poRule()
         {
             latch = new Latch();
@@ -111,16 +113,34 @@ namespace Kaazing.K3po.NUnit
             Console.WriteLine("K3po script Prepared");
         }
 
+        /// <summary>
+        /// Wait a Barrier to be notified
+        /// </summary>
+        /// <param name="barrierName">name of the barrier</param>
+        public void AwaitBarrier(string barrierName)
+        {
+            Assert.IsTrue(latch.IsPrepared, "K3po is not ready for this test.");
+            _scriptRunner.AwaitBarrier(barrierName);
+        }
 
- /// <summary>
-///Send Start command to k3po engine.  The accepts are implicitly started just prior to the test logic in the
- /// Specification.
- /// </summary>
+        /// <summary>
+        /// Notify barrier to fire.
+        /// </summary>
+        /// <param name="barrierName">name of the barrier</param>
+        public void NotifyBarrier(string barrierName)
+        {
+            Assert.IsTrue(latch.IsPrepared, "K3po is not ready for this test.");
+            _scriptRunner.NotifyBarrier(barrierName);
+        }
 
+        /// <summary>
+        ///Send Start command to k3po engine.  The accepts are implicitly started just prior to the test logic in the
+        /// Specification.
+        /// </summary>
         public void Start()
         {
-
-            _scriptRunner.Start();
+            Assert.IsTrue(latch.IsPrepared, "K3po is not ready for this test.");
+            //_scriptRunner.Start();
             // wait for script ready to start
             latch.AwaitStartable();
             Console.WriteLine("K3po script Started");
@@ -195,7 +215,7 @@ namespace Kaazing.K3po.NUnit
             {
                 _task = Task.Factory.StartNew<ScriptPair>(() =>
                 {
-                    return _scriptRunner.Start();
+                    return _scriptRunner.StartTest();
                 }, TaskCreationOptions.LongRunning);
             }
             catch (AggregateException e)

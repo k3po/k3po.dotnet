@@ -31,17 +31,17 @@ namespace K3po.NUnit.Sample
         public K3poRule k3po = new K3poRule();
 
         [Test]
-        [Specification("echo.data")]
+        [Specification("server.hello.world")]
         public void ShouldSendAndReceive()
         {
-            TcpClient tcpClient = new TcpClient("localhost", 8000);
+            TcpClient tcpClient = new TcpClient("localhost", 8001);
             Assert.IsTrue(tcpClient.Connected);
             byte[] sendData = Encoding.UTF8.GetBytes("hello world");
             tcpClient.GetStream().Write(sendData, 0, sendData.Length);
-            byte[] receivedData = new byte[sendData.Length];
-            tcpClient.GetStream().Read(receivedData, 0, receivedData.Length);
-            string receivedString = Encoding.UTF8.GetString(receivedData);
-            Assert.AreEqual("hello world", receivedString);
+            byte[] receivedData = new byte[50];
+            int len = tcpClient.GetStream().Read(receivedData, 0, receivedData.Length);
+            string receivedString = Encoding.UTF8.GetString(receivedData, 0, len);
+            Assert.AreEqual("hello client", receivedString);
             tcpClient.Close();
             
             // run the test
@@ -59,7 +59,7 @@ namespace K3po.NUnit.Sample
 
         [Test]
         [Timeout(5000)]
-        [Specification("echo.data")]
+        [Specification("server.hello.world")]
         public void ShouldFailIfScriptNotMatch()
         {
             Task task = AsyncTcpClient();
@@ -69,7 +69,7 @@ namespace K3po.NUnit.Sample
 
         private async Task AsyncTcpClient()
         {
-            using (TcpClient tcpClient = new TcpClient("localhost", 8000))
+            using (TcpClient tcpClient = new TcpClient("localhost", 8001))
             {
                 Assert.IsTrue(tcpClient.Connected);
                 Console.WriteLine("Connected");

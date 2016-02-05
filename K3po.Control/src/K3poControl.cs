@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2007-2014 Kaazing Corporation. All rights reserved.
+ * Copyright (c) 2007-2016 Kaazing Corporation. All rights reserved.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -29,6 +29,10 @@ using System.IO;
 
 namespace Kaazing.K3po.Control
 {
+    /// <summary>
+    /// Control class for controlling the robot.
+    /// This class establishes a tcp connection and can be fed commands to run.
+    /// </summary>
     public sealed class K3poControl
     {
         private const string HEADER_PATTERN = @"([a-z\\-]+):([^\n]+)";
@@ -38,17 +42,27 @@ namespace Kaazing.K3po.Control
         private IUriConnection _connection;
         private Stream _stream;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="location">location of k3po server to connect to.</param>
         public K3poControl(Uri location)
         {
             _location = location;
         }
 
+        /// <summary>
+        /// Connects to the k3po server.
+        /// </summary>
         public void Connect()
         {
             _connection = _location.OpenConnection();
             _stream = _connection.GetStream();
         }
 
+        /// <summary>
+        /// Discoonects from the k3po server
+        /// </summary>
         public void Disconnect()
         {
             _connection.Close();
@@ -74,6 +88,10 @@ namespace Kaazing.K3po.Control
             this.WriteCommand(disposeCommand);
         }
 
+        /// <summary>
+        /// Writes a command to the wire.
+        /// </summary>
+        /// <param name="command">command to write</param>
         public void WriteCommand(Command command)
         {
             CheckConnected();
@@ -103,11 +121,20 @@ namespace Kaazing.K3po.Control
             }
         }
 
+        /// <summary>
+        /// Reads a CommandEvent from the connection with K3po.
+        /// </summary>
+        /// <returns>CommandEvent</returns>
         public CommandEvent ReadEvent()
         {
             return ReadEvent(0);
         }
 
+        /// <summary>
+        /// Reads a CommandEvent from the connection with K3po.
+        /// </summary>
+        /// <param name="timeout">time to wait for CommandEvent (milliseconds)</param>
+        /// <returns>CommandEvent</returns>
         public CommandEvent ReadEvent(int timeout)
         {
 
@@ -201,6 +228,9 @@ namespace Kaazing.K3po.Control
                             break;
                         case "content-length":
                             length = Int32.Parse(headerValue);
+                            break;
+                        case "barrier":
+                            preparedEvent.Barriers.Add(headerValue);
                             break;
                      }
                 }

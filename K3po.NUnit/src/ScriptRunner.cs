@@ -55,7 +55,7 @@ namespace Kaazing.K3po.NUnit
             _controller = new K3poControl(controlUri);
         }
 
-        public ScriptPair Start()
+        public ScriptPair StartTest()
         {
                 try
                 {
@@ -164,7 +164,20 @@ namespace Kaazing.K3po.NUnit
             _controller.WriteCommand(abortCommand);
         }
 
-        public void awaitBarrier(String barrierName)
+        public void Start()
+        {
+            if (_latch.IsPrepared)
+            {
+                StartCommand startCommand = new StartCommand();
+                _controller.WriteCommand(startCommand);
+            }
+            else
+            {
+                throw new InvalidOperationException("K3po is not ready start");
+            }
+        }
+
+        public void AwaitBarrier(String barrierName)
         {
             if (!_barriers.Keys.Contains(barrierName))
             {
@@ -186,7 +199,7 @@ namespace Kaazing.K3po.NUnit
             notifiedEvent.Wait();
         }
 
-        public void notifyBarrier(string barrierName)
+        public void NotifyBarrier(string barrierName)
         {
             if (!_barriers.ContainsKey(barrierName))
             {
