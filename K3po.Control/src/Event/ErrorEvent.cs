@@ -25,7 +25,7 @@ using System.Text;
 
 namespace Kaazing.K3po.Control
 {
-    public class ErrorEvent : ControlEvent
+    public class ErrorEvent : CommandEvent
     {
         private string _summary;
         private string _description;
@@ -42,7 +42,7 @@ namespace Kaazing.K3po.Control
             set { _summary = value; }
         }
 
-        public override ControlEvent.Kind EventKind
+        public override CommandEvent.Kind EventKind
         {
             get { return Kind.ERROR; }
         }

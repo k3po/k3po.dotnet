@@ -25,9 +25,10 @@ using System.Text;
 
 namespace Kaazing.K3po.Control
 {
-    public class PreparedEvent : ControlEvent
+    public class PreparedEvent : CommandEvent
     {
         private string _script;
+        private List<string> _barriers = new List<string>();
 
         public string Script
         {
@@ -35,9 +36,14 @@ namespace Kaazing.K3po.Control
             set { _script = value; }
         }
 
-        public override ControlEvent.Kind EventKind
+        public override CommandEvent.Kind EventKind
         {
             get { return Kind.PREPARED; }
         }
+
+        public List<string>  Barriers {
+            get { return _barriers; }
+        }
+    
     }
 }

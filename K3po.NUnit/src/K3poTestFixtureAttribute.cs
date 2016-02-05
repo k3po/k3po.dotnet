@@ -30,11 +30,20 @@ namespace Kaazing.K3po.NUnit
     public class K3poTestFixtureAttribute : TestFixtureAttribute
     {
         private string _scriptRoot;
+        private string _k3poRulePropertyName = "K3poRule";
+
+        public string K3poRulePropertyName
+        {
+            get { return _k3poRulePropertyName; }
+            set { _k3poRulePropertyName = value; }
+        }
 
         public string ScriptRoot
         {
             get { return _scriptRoot; }
             set { _scriptRoot = value; }
         }
+
+
     }
 }

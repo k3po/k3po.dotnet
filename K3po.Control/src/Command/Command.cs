@@ -31,7 +31,10 @@ namespace Kaazing.K3po.Control
         {
             PREPARE,
             START,
-            ABORT
+            ABORT,
+            AWAIT,
+            NOTIFY,
+            DISPOSE
         };
 
         public abstract Kind CommandKind { get; }

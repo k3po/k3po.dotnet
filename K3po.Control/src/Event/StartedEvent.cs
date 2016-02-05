@@ -25,9 +25,9 @@ using System.Text;
 
 namespace Kaazing.K3po.Control
 {
-    public class StartedEvent : ControlEvent
+    public class StartedEvent : CommandEvent
     {
-        public override ControlEvent.Kind EventKind
+        public override CommandEvent.Kind EventKind
         {
             get { return Kind.STARTED; }
         }

@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,6 +28,8 @@ namespace K3po.NUnit.Sample
     [TestFixture]
     public class TcpClientIT
     {
+        public K3poRule k3po = new K3poRule();
+
         [Test]
         [Specification("echo.data")]
         public void ShouldSendAndReceive()
@@ -40,7 +43,49 @@ namespace K3po.NUnit.Sample
             string receivedString = Encoding.UTF8.GetString(receivedData);
             Assert.AreEqual("hello world", receivedString);
             tcpClient.Close();
+            
+            // run the test
+            k3po.Finish();
+
             Assert.IsFalse(tcpClient.Connected);
         }
+
+        [Test]
+        [Specification("ScriptNotExist")]
+        public void ShouldFailIfScriptFileNotExist()
+        {
+            Console.WriteLine("Test invalid script file name");
+        }
+
+        [Test]
+        [Timeout(5000)]
+        [Specification("echo.data")]
+        public void ShouldFailIfScriptNotMatch()
+        {
+            Task task = AsyncTcpClient();
+            // run the test
+            k3po.Finish();
+        }
+
+        private async Task AsyncTcpClient()
+        {
+            using (TcpClient tcpClient = new TcpClient("localhost", 8000))
+            {
+                Assert.IsTrue(tcpClient.Connected);
+                Console.WriteLine("Connected");
+                byte[] sendData = Encoding.UTF8.GetBytes("hello K3po");
+                await tcpClient.GetStream().WriteAsync(sendData, 0, sendData.Length);
+                Console.WriteLine("Send data");
+                byte[] receivedData = new byte[sendData.Length];
+                await tcpClient.GetStream().ReadAsync(receivedData, 0, receivedData.Length);
+                string receivedString = Encoding.UTF8.GetString(receivedData);
+                Console.WriteLine("Received data");
+                Assert.AreEqual("hello world", receivedString);
+                tcpClient.Close();
+                Assert.IsFalse(tcpClient.Connected);
+            }
+
+        }
+
     }
 }

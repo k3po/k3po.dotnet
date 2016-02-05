@@ -25,7 +25,7 @@ using System.Text;
 
 namespace Kaazing.K3po.Control
 {
-    public class FinishedEvent : ControlEvent
+    public class FinishedEvent : CommandEvent
     {
         private string _script;
 
@@ -35,7 +35,7 @@ namespace Kaazing.K3po.Control
             set { _script = value; }
         }
 
-        public override ControlEvent.Kind EventKind
+        public override CommandEvent.Kind EventKind
         {
             get { return Kind.FINISHED; }
         }
