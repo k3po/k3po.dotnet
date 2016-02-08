@@ -102,17 +102,17 @@ namespace Kaazing.K3po.NUnit
         /// Starts the connects in the k3po script.  The accepts are implicitly started just prior to the test logic in the
         /// Specification.
         /// </summary>
-        /// <param name="script"></param>
+        /// <param name="script">the k3po script for the test</param>
         public void Prepare(string script)
         {
             Prepare(new string[] { script });
         }
 
         /// <summary>
-        ///Starts the connects in the k3po scripts.  The accepts are implicitly started just prior to the test logic in the
+        /// Starts the connects in the k3po scripts.  The accepts are implicitly started just prior to the test logic in the
         /// Specification.
         /// </summary>
-        /// <param name="scripts"></param>
+        /// <param name="scripts">the list of scripts for the test</param>
         public void Prepare(string[] scripts)
         {
             latch = new Latch();
@@ -144,7 +144,7 @@ namespace Kaazing.K3po.NUnit
         }
 
         /// <summary>
-        ///Send Start command to k3po engine.  The accepts are implicitly started just prior to the test logic in the
+        /// Send Start command to k3po engine.  The accepts are implicitly started just prior to the test logic in the
         /// Specification.
         /// </summary>
         public void Start()
@@ -174,15 +174,14 @@ namespace Kaazing.K3po.NUnit
         }
 
         /// <summary>
-        /// block call to await for the K3po threads to stop executing.
+        /// Block call to await for the K3po threads to stop executing.
+        /// this call will abort K3po test on timeout
         /// </summary>
         /// <param name="timeout">millesecond to wait</param>
-        /// <returns>ture if script finished, false if timeout</returns>
         public void Finish(int timeout)
         {
             Assert.IsFalse(latch.IsInitState, "K3po is not ready for this test.");
-            bool ret = latch.AwaitFinished(timeout);
-            if (ret)
+            if (latch.AwaitFinished(timeout))
             {
                 Console.WriteLine("K3po scirpt finished");
             }
@@ -193,6 +192,10 @@ namespace Kaazing.K3po.NUnit
             }
         }
 
+        /// <summary>
+        /// Sends Abort to K3po engine to abort current test
+        /// K3po responses with finished event
+        /// </summary>
         public void Abort()
         {
             Assert.IsFalse(latch.IsInitState, "K3po is not ready for this test.");
@@ -201,22 +204,34 @@ namespace Kaazing.K3po.NUnit
             Console.WriteLine("K3po scirpt aborted");
         }
 
+        /// <summary>
+        /// Sends Dispose to K3po engine to closes all open connections
+        /// </summary>
         public void Dispose()
         {
             _scriptRunner.Dispose();
             latch.AwaitDisposed();
         }
 
+        /// <summary>
+        /// the test is finished 
+        /// </summary>
         public bool IsFinished
         {
             get { return latch.IsFinished; }
         }
 
+        /// <summary>
+        /// K3po has exception during the test
+        /// </summary>
         public bool HasException
         {
             get { return latch.HasException; }
         }
 
+        /// <summary>
+        /// the Result for the test, this value is available when IsFinished is true
+        /// </summary>
         public ScriptPair Result
         {
             get
