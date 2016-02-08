@@ -30,6 +30,11 @@ namespace K3po.NUnit.Sample
     {
         public K3poRule k3po = new K3poRule();
 
+        /// <summary>
+        /// Use Specification attribute to start k3po engine for this test.
+        /// The Specification attribute runs k3po.Prepare in BeforeTest and
+        /// k3po.Abort() in AfterTest if test timeout
+        /// </summary>
         [Test]
         [Specification("server.hello.world")]
         public void ShouldSendAndReceive()
@@ -44,27 +49,42 @@ namespace K3po.NUnit.Sample
             Assert.AreEqual("hello client", receivedString);
             tcpClient.Close();
             
-            // run the test
+            // run the test, verify script match expected
             k3po.Finish();
 
             Assert.IsFalse(tcpClient.Connected);
         }
 
+       /// <summary>
+       /// In this sample, we call k3po functions directly inside test
+       /// </summary>
         [Test]
-        [Specification("ScriptNotExist")]
         public void ShouldFailIfScriptFileNotExist()
         {
-            Console.WriteLine("Test invalid script file name");
+            Assert.Throws(typeof(System.IO.InvalidDataException), () =>
+            {
+                k3po.Prepare("file.not.exist");
+                k3po.Finish();
+            });
+
         }
 
+        /// <summary>
+        /// In this sample, we pass a timeout value to tell k3po abort the test
+        /// </summary>
         [Test]
-        [Timeout(5000)]
-        [Specification("server.hello.world")]
         public void ShouldFailIfScriptNotMatch()
         {
-            Task task = AsyncTcpClient();
-            // run the test
-            k3po.Finish();
+            Assert.Throws(typeof(AssertionException), () =>
+            {
+                // k3po engine to prepare script
+                k3po.Prepare("server.hello.world");
+                // start test code
+                Task task = AsyncTcpClient();
+                // wait 5 seconds k3po engine to complete the test
+                k3po.Finish(5000);
+                Assert.AreEqual(k3po.Result.ExpectedScript, k3po.Result.ObservedScript);
+            });
         }
 
         private async Task AsyncTcpClient()
@@ -73,14 +93,15 @@ namespace K3po.NUnit.Sample
             {
                 Assert.IsTrue(tcpClient.Connected);
                 Console.WriteLine("Connected");
+                // send diferent data to k3po engine
                 byte[] sendData = Encoding.UTF8.GetBytes("hello K3po");
                 await tcpClient.GetStream().WriteAsync(sendData, 0, sendData.Length);
                 Console.WriteLine("Send data");
-                byte[] receivedData = new byte[sendData.Length];
-                await tcpClient.GetStream().ReadAsync(receivedData, 0, receivedData.Length);
-                string receivedString = Encoding.UTF8.GetString(receivedData);
+                byte[] receivedData = new byte[50];
+                int len = await tcpClient.GetStream().ReadAsync(receivedData, 0, receivedData.Length);
+                string receivedString = Encoding.UTF8.GetString(receivedData, 0, len);
                 Console.WriteLine("Received data");
-                Assert.AreEqual("hello world", receivedString);
+                Assert.AreEqual("hello client", receivedString);
                 tcpClient.Close();
                 Assert.IsFalse(tcpClient.Connected);
             }

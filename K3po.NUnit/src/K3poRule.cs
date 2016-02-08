@@ -41,7 +41,7 @@ namespace Kaazing.K3po.NUnit
         private Uri controlURL = new Uri("tcp://localhost:11642");
         private ScriptRunner _scriptRunner;
         private Task<ScriptPair> _task;
-        private int _timeout = 10000;
+        private int _timeout = 0;
 
         /// <summary>
         /// Allocates a new K3poRule.
@@ -89,13 +89,23 @@ namespace Kaazing.K3po.NUnit
         /// <summary>
         /// Sets the Timeout on which to communicate to the k3po driver.
         /// </summary>
-        /// <param name="timeout"> milliseconds, default 10 second</param>
+        /// <param name="timeout"> milliseconds, default 0 (no timeout)</param>
         /// <returns>an instance of K3poRule for convenience</returns>
         /// 
         public K3poRule setTimeout(int timeout)
         {
             this._timeout = timeout;
             return this;
+        }
+
+        /// <summary>
+        /// Starts the connects in the k3po script.  The accepts are implicitly started just prior to the test logic in the
+        /// Specification.
+        /// </summary>
+        /// <param name="script"></param>
+        public void Prepare(string script)
+        {
+            Prepare(new string[] { script });
         }
 
         /// <summary>
@@ -152,8 +162,15 @@ namespace Kaazing.K3po.NUnit
         public void Finish()
         {
             Assert.IsFalse(latch.IsInitState, "K3po is not ready for this test.");
-            latch.AwaitFinished();
-            Console.WriteLine("K3po scirpt finished");
+            if (_timeout > 0)
+            {
+                Finish(_timeout);
+            }
+            else
+            {
+                latch.AwaitFinished();
+                Console.WriteLine("K3po scirpt finished");
+            }
         }
 
         /// <summary>
@@ -161,12 +178,19 @@ namespace Kaazing.K3po.NUnit
         /// </summary>
         /// <param name="timeout">millesecond to wait</param>
         /// <returns>ture if script finished, false if timeout</returns>
-        public bool Finish(int timeout)
+        public void Finish(int timeout)
         {
             Assert.IsFalse(latch.IsInitState, "K3po is not ready for this test.");
             bool ret = latch.AwaitFinished(timeout);
-            Console.WriteLine("K3po scirpt finished");
-            return ret;
+            if (ret)
+            {
+                Console.WriteLine("K3po scirpt finished");
+            }
+            else
+            {
+                Console.WriteLine("K3po scirpt timeout, abort now");
+                Abort();
+            }
         }
 
         public void Abort()

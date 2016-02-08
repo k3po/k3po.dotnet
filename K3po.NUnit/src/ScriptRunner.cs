@@ -186,7 +186,7 @@ namespace Kaazing.K3po.NUnit
             }
             CountdownEvent notifiedEvent = new CountdownEvent(1);
             BarrierStateMachine barrierStateMachine = _barriers[barrierName];
-            barrierStateMachine.AddListener(new BarrierStateListener1(notifiedEvent));
+            barrierStateMachine.AddListener(new AwaitBarrierStateListener(notifiedEvent));
 
             try
             {
@@ -207,7 +207,7 @@ namespace Kaazing.K3po.NUnit
             }
             CountdownEvent notified = new CountdownEvent(1);
             BarrierStateMachine barrierStateMachine = _barriers[barrierName];
-            barrierStateMachine.AddListener(new BarrierStateListener2(this, barrierName, notified));
+            barrierStateMachine.AddListener(new NotifyBarrierStateListener(this, barrierName, notified));
             notified.Wait();
         }
 
@@ -234,10 +234,10 @@ namespace Kaazing.K3po.NUnit
             }
         }
 
-        class BarrierStateListener1 : BarrierStateListener
+        class AwaitBarrierStateListener : BarrierStateListener
         {
             private CountdownEvent _notifiedEvent;
-            public BarrierStateListener1(CountdownEvent notifiedEvent)
+            public AwaitBarrierStateListener(CountdownEvent notifiedEvent)
             {
                 _notifiedEvent = notifiedEvent;
             }
@@ -259,13 +259,13 @@ namespace Kaazing.K3po.NUnit
             }
         }
 
-        class BarrierStateListener2 : BarrierStateListener
+        class NotifyBarrierStateListener : BarrierStateListener
         {
             private CountdownEvent _notifiedEvent;
             private ScriptRunner _runner;
             private string _barrierName;
 
-            public BarrierStateListener2(ScriptRunner parent, string barrierName, CountdownEvent notifiedEvent) {
+            public NotifyBarrierStateListener(ScriptRunner parent, string barrierName, CountdownEvent notifiedEvent) {
                 _runner = parent;
                 _notifiedEvent = notifiedEvent;
                 _barrierName = barrierName;

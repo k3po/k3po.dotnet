@@ -57,9 +57,6 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Sample.licenseheader" />
-    <None Include="Scripts\echo.data.rpt" />
-    <None Include="Scripts\http\response.rpt" />
-    <None Include="Scripts\http\request.rpt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\K3po.Control\K3po.Control.csproj">
@@ -70,6 +67,9 @@
       <Project>{bc1ecddd-9744-468a-a59f-a944084583be}</Project>
       <Name>K3po.NUnit</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Scripts\" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
