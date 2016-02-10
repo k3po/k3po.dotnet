@@ -144,7 +144,7 @@ namespace Kaazing.K3po.NUnit
         }
 
         /// <summary>
-        /// Send Start command to k3po engine.  The accepts are implicitly started just prior to the test logic in the
+        /// Send Start command to k3po driver.  The accepts are implicitly started just prior to the test logic in the
         /// Specification.
         /// </summary>
         public void Start()
@@ -193,7 +193,7 @@ namespace Kaazing.K3po.NUnit
         }
 
         /// <summary>
-        /// Sends Abort to K3po engine to abort current test
+        /// Sends Abort to K3po driver to abort current test
         /// K3po responses with finished event
         /// </summary>
         public void Abort()
@@ -205,7 +205,7 @@ namespace Kaazing.K3po.NUnit
         }
 
         /// <summary>
-        /// Sends Dispose to K3po engine to closes all open connections
+        /// Sends Dispose to K3po driver to closes all open connections
         /// </summary>
         public void Dispose()
         {

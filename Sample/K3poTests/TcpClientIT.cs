@@ -31,7 +31,7 @@ namespace K3po.NUnit.Sample
         public K3poRule k3po = new K3poRule();
 
         /// <summary>
-        /// Use Specification attribute to start k3po engine for this test.
+        /// Use Specification attribute to start k3po driver for this test.
         /// The Specification attribute runs k3po.Prepare in BeforeTest and
         /// k3po.Abort() in AfterTest if test timeout
         /// </summary>
@@ -77,11 +77,11 @@ namespace K3po.NUnit.Sample
         {
             Assert.Throws(typeof(AssertionException), () =>
             {
-                // k3po engine to prepare script
+                // k3po driver to prepare script
                 k3po.Prepare("server.hello.world");
                 // start test code
                 Task task = AsyncTcpClient();
-                // wait 5 seconds k3po engine to complete the test
+                // wait 5 seconds k3po driver to complete the test
                 k3po.Finish(5000);
                 Assert.AreEqual(k3po.Result.ExpectedScript, k3po.Result.ObservedScript);
             });
@@ -93,7 +93,7 @@ namespace K3po.NUnit.Sample
             {
                 Assert.IsTrue(tcpClient.Connected);
                 Console.WriteLine("Connected");
-                // send diferent data to k3po engine
+                // send diferent data to k3po driver
                 byte[] sendData = Encoding.UTF8.GetBytes("hello K3po");
                 await tcpClient.GetStream().WriteAsync(sendData, 0, sendData.Length);
                 Console.WriteLine("Send data");
