@@ -25,7 +25,7 @@
 
 - Open K3PO.sln in Visual Studio
 - Build the solution.
-    - If the build failed because missing nunit.framework. make sure [Visual Studio is configured to 'Allow NuGet to download missing packages'](https://docs.nuget.org/consume/package-restore)
+    - If the build failed because of missing 'nunit.framework'. make sure [Visual Studio is configured to 'Allow NuGet to download missing packages'](https://docs.nuget.org/consume/package-restore)
 - The sample test is available in Sample\K3po.NUnit.Sample project
 - You can use [NUnit Test Adapter](https://visualstudiogallery.msdn.microsoft.com/6ab922d0-21c0-4f06-ab5f-4ecd1fe7175d) to run the NUnit test
 - Before running the test, make sure that the K3PO server is launched.
