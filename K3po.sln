@@ -10,6 +10,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{5E1CA5
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "K3po.NUnit.Sample", "Sample\K3po.NUnit.Sample.csproj", "{DB40D108-183D-46E8-8BAE-B04731B6B73F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "K3po.Xamarin", "K3po.Xamarin\K3po.Xamarin.csproj", "{783E787E-8BAD-4F30-BE43-456BA70D90BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "K3po.Xamarin.Sample", "Sample\K3po.Xamarin.Sample\K3po.Xamarin.Sample.csproj", "{7E2197D8-8A09-4EA4-914D-029C2AC80B65}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,11 +32,22 @@ Global
 		{DB40D108-183D-46E8-8BAE-B04731B6B73F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB40D108-183D-46E8-8BAE-B04731B6B73F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB40D108-183D-46E8-8BAE-B04731B6B73F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{783E787E-8BAD-4F30-BE43-456BA70D90BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{783E787E-8BAD-4F30-BE43-456BA70D90BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{783E787E-8BAD-4F30-BE43-456BA70D90BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{783E787E-8BAD-4F30-BE43-456BA70D90BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E2197D8-8A09-4EA4-914D-029C2AC80B65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E2197D8-8A09-4EA4-914D-029C2AC80B65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E2197D8-8A09-4EA4-914D-029C2AC80B65}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{7E2197D8-8A09-4EA4-914D-029C2AC80B65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E2197D8-8A09-4EA4-914D-029C2AC80B65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E2197D8-8A09-4EA4-914D-029C2AC80B65}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{DB40D108-183D-46E8-8BAE-B04731B6B73F} = {5E1CA5BB-9670-4548-A50F-ED243FFE4EEC}
+		{7E2197D8-8A09-4EA4-914D-029C2AC80B65} = {5E1CA5BB-9670-4548-A50F-ED243FFE4EEC}
 	EndGlobalSection
 EndGlobal
