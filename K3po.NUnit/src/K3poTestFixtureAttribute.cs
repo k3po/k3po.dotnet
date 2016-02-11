@@ -1,6 +1,6 @@
 ﻿
 /*
- * Copyright (c) 2007-2014 Kaazing Corporation. All rights reserved.
+ * Copyright (c) 2007-2016 Kaazing Corporation. All rights reserved.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -30,11 +30,20 @@ namespace Kaazing.K3po.NUnit
     public class K3poTestFixtureAttribute : TestFixtureAttribute
     {
         private string _scriptRoot;
+        private string _k3poRulePropertyName = "K3poRule";
+
+        public string K3poRulePropertyName
+        {
+            get { return _k3poRulePropertyName; }
+            set { _k3poRulePropertyName = value; }
+        }
 
         public string ScriptRoot
         {
             get { return _scriptRoot; }
             set { _scriptRoot = value; }
         }
+
+
     }
 }

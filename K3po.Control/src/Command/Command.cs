@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2007-2014 Kaazing Corporation. All rights reserved.
+ * Copyright (c) 2007-2016 Kaazing Corporation. All rights reserved.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -31,7 +31,10 @@ namespace Kaazing.K3po.Control
         {
             PREPARE,
             START,
-            ABORT
+            ABORT,
+            AWAIT,
+            NOTIFY,
+            DISPOSE
         };
 
         public abstract Kind CommandKind { get; }

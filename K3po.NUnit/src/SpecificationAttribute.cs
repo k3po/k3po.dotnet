@@ -1,6 +1,6 @@
 
 /*
- * Copyright (c) 2007-2014 Kaazing Corporation. All rights reserved.
+ * Copyright (c) 2007-2016 Kaazing Corporation. All rights reserved.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -25,74 +25,88 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
-using NUnit.Core;
 using System.IO;
 using System.Reflection;
+using NUnit.Framework.Interfaces;
 
 namespace Kaazing.K3po.NUnit
 {
     [AttributeUsage(AttributeTargets.Method)]
-    public class SpecificationAttribute : CategoryAttribute, ITestAction
+    public class SpecificationAttribute : Attribute, ITestAction
     {
         private string[] _scripts;
-        private ScriptRunner _scriptRunner;
-        private Latch _latch = new Latch();
+
+        public SpecificationAttribute(string script)
+        {
+            _scripts = new string[] { script };
+            //categoryName = "K3PO";
+        }
 
         public SpecificationAttribute(params string[] scripts)
         {
             _scripts = scripts;
-            categoryName = "K3PO";
+            //categoryName = "K3PO";
         }
 
-        public void AfterTest(TestDetails testDetails)
+        public string[] Scripts
         {
-            // Test could fail due to assertion error or timeout or when preparing
-            if (TestContext.CurrentContext.Result.Status == TestStatus.Failed)
-            {
-                // Abort the script execution
-                _scriptRunner.Abort();
-            }
+            get { return _scripts; }
+        }
 
-            // wait until the script execution is completed
-            _scriptRunner.Join();
-            
+        public void BeforeTest(ITest test)
+        {
+            Console.WriteLine("BeforeTest");
+            K3poRule k3poRule = GetK3poRule(test);
+            k3poRule.Prepare(_scripts);
+        }
+
+        public void AfterTest(ITest test)
+        {
+            Console.WriteLine("AfterTest");
+            K3poRule k3poRule = GetK3poRule(test);
             try
             {
-                Assert.AreEqual(_scriptRunner.ScriptPair.ExpectedScript, _scriptRunner.ScriptPair.ObservedScript, "Robotic behavior did not match expected");
-            }
-            catch (AssertionException exception)
-            {
-                Console.WriteLine(exception.Message);
-                throw exception;
-            }
-            
-        }
-
-        public void BeforeTest(TestDetails testDetails)
-        {
-            K3poTestFixtureAttribute fixtureAttribute = Attribute.GetCustomAttribute(testDetails.Method.DeclaringType, typeof(K3poTestFixtureAttribute)) as K3poTestFixtureAttribute;
-            IList<string> scripts = new List<string>();
-            foreach (string script in _scripts) {
-                String scriptName = String.Empty;
-                if (fixtureAttribute == null || String.IsNullOrEmpty(fixtureAttribute.ScriptRoot))
+                if (k3poRule.IsFinished)
                 {
-                    scriptName = script;
+                    if (!k3poRule.HasException)
+                    {
+                        Assert.AreEqual(k3poRule.Result.ExpectedScript, k3poRule.Result.ObservedScript, "Script not Match");
+                    }
                 }
                 else
                 {
-                    scriptName = String.Format("{0}/{1}", fixtureAttribute.ScriptRoot, script);
+                    // timeout, abort k3po
+                    k3poRule.Abort();
+                    try
+                    {
+                        Assert.AreEqual(k3poRule.Result.ExpectedScript, k3poRule.Result.ObservedScript, "Test Timeout!!!");
+                    }
+                    catch (Exception assertException)
+                    {
+                        throw new TimeoutException("Test timeout!!!", assertException);
+                    }
+                    throw new TimeoutException("Test timeout!!!");
                 }
-                scripts.Add(scriptName);
             }
+            finally
+            {
+                //k3poRule.Dispose();
+            }
+        }
 
+        private K3poRule GetK3poRule(ITest test)
+        {
+            // get K3poRule instance
+            K3poTestFixtureAttribute fixtureAttribute = Attribute.GetCustomAttribute(test.GetType(), typeof(K3poTestFixtureAttribute)) as K3poTestFixtureAttribute;
+            string K3poPropertyName = (fixtureAttribute == null || String.IsNullOrEmpty(fixtureAttribute.K3poRulePropertyName)) ? "k3po" : fixtureAttribute.K3poRulePropertyName;
 
-            _scriptRunner = new ScriptRunner(new Uri("tcp://localhost:11642"), scripts, _latch); 
+            FieldInfo k3poField = test.Fixture.GetType().GetField(K3poPropertyName);
 
-            // Start the script execution
-            _scriptRunner.Start();
-
-            // wait until k3po server is ready to accept connections
-            _latch.AwaitPrepared();
+            if(k3poField != null)
+            {
+                return (K3poRule)k3poField.GetValue(test.Fixture);
+            }
+            return null;
         }
 
         public ActionTargets Targets

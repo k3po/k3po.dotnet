@@ -1,6 +1,6 @@
 
 /*
- * Copyright (c) 2007-2014 Kaazing Corporation. All rights reserved.
+ * Copyright (c) 2007-2016 Kaazing Corporation. All rights reserved.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -28,45 +28,48 @@ using System.Threading.Tasks;
 using System.Net.Sockets;
 using Kaazing.K3po.Control;
 using System.IO;
+using System.Threading;
+using NUnit.Framework;
 
 namespace Kaazing.K3po.NUnit
 {
     public class ScriptRunner
     {
-        private readonly K3poControl _control;
+        private readonly K3poControl _controller;
         private readonly IList<string> _names;
         private readonly Latch _latch;
-        private ScriptPair _scriptPair;
 
         private volatile Boolean _abortScheduled;
+        private volatile Dictionary<string, BarrierStateMachine> _barriers;
+#if DEBUG
+        private const int DISPOSE_TIMEOUT = 0;
+#else
+        private const int DISPOSE_TIMEOUT = 5000;
+#endif
 
         public ScriptRunner(Uri controlUri, IList<string> names, Latch latch)
         {
             _names = names;
             _latch = latch;
-            _control = new K3poControl(controlUri);
+            _barriers = new Dictionary<string, BarrierStateMachine>();
+            _controller = new K3poControl(controlUri);
         }
 
-        public ScriptPair ScriptPair
+        public ScriptPair StartTest()
         {
-            get
-            {
-                return _scriptPair;
-            }
-        }
-
-        public void Start()
-        {
-            Task.Factory.StartNew(() =>
-            {
                 try
                 {
-                    _control.Connect();
+                    // We are already done if abort before we start
+                    if (_abortScheduled)
+                    {
+                        return new ScriptPair();
+                    }
+
+                    _controller.Connect();
 
                     // Send PREPARE command
                     PrepareCommand prepareCommand = new PrepareCommand { Names = _names };
-
-                    _control.WriteCommand(prepareCommand);
+                    _controller.WriteCommand(prepareCommand);
 
                     bool abortWritten = false;
                     string expectedScript = null;
@@ -75,17 +78,18 @@ namespace Kaazing.K3po.NUnit
                     {
                         try
                         {
-                            ControlEvent controlEvent = _control.ReadEvent(200);
+                            CommandEvent controlEvent = _controller.ReadEvent(200);
 
                             switch (controlEvent.EventKind)
                             {
-                                case ControlEvent.Kind.PREPARED:
+                                case CommandEvent.Kind.PREPARED:
                                     PreparedEvent prepared = controlEvent as PreparedEvent;
                                     expectedScript = prepared.Script;
-
+                                    foreach (string barrier in prepared.Barriers)
+                                    {
+                                        _barriers.Add(barrier, new BarrierStateMachine());
+                                    }
                                     _latch.NotifyPrepared();
-
-                                    _latch.AwaitStartable();
 
                                     if (_abortScheduled && !abortWritten)
                                     {
@@ -95,25 +99,32 @@ namespace Kaazing.K3po.NUnit
                                     else
                                     {
                                         StartCommand startCommand = new StartCommand();
-                                        _control.WriteCommand(startCommand);
+                                        _controller.WriteCommand(startCommand);
                                     }
                                     break;
-                                case ControlEvent.Kind.STARTED:
+                                case CommandEvent.Kind.STARTED:
+                                    _latch.NotifyStartable();
                                     break;
-                                case ControlEvent.Kind.ERROR:
+                                case CommandEvent.Kind.NOTIFIED:
+                                    NotifiedEvent notifiedEvent = controlEvent as NotifiedEvent;
+                                    BarrierStateMachine stateMachine = _barriers[notifiedEvent.Barrier];
+                                    stateMachine.Notified();
+                                    break;
+                                case CommandEvent.Kind.ERROR:
                                     ErrorEvent errorEvent = (ErrorEvent)controlEvent;
-                                    throw new Exception(String.Format("{0}:{1}", errorEvent.Summary, errorEvent.Description));
-                                case ControlEvent.Kind.FINISHED:
+                                    InvalidDataException ex = new InvalidDataException(String.Format("{0}:{1}", errorEvent.Summary, errorEvent.Description));
+                                    _latch.NotifyException(ex);
+                                    break;
+                                case CommandEvent.Kind.FINISHED:
+                                    _latch.NotifyFinished();
                                     FinishedEvent finishedEvent = controlEvent as FinishedEvent;
                                     string observedScript = finishedEvent.Script;
-                                    _scriptPair = new ScriptPair { ExpectedScript = expectedScript, ObservedScript = observedScript };
-                                    _latch.NotifyFinished();
-                                    return;
+                                    return new ScriptPair { ExpectedScript = expectedScript, ObservedScript = observedScript };
                                 default:
                                     throw new InvalidOperationException("Unsupported event: " + controlEvent.EventKind.ToString());
                             }
                         }
-                        catch (IOException ex)
+                        catch (Exception)
                         {
                             if (_abortScheduled && !abortWritten)
                             {
@@ -125,7 +136,7 @@ namespace Kaazing.K3po.NUnit
                 }
                 catch (SocketException socketException)
                 {
-                    Exception exception = new Exception("Failed to connect. Is the Robot running?", socketException);
+                    Exception exception = new IOException("Failed to connect. Is the Robot running?", socketException);
                     _latch.NotifyException(exception);
                 }
                 catch (Exception exception)
@@ -134,29 +145,150 @@ namespace Kaazing.K3po.NUnit
                 }
                 finally
                 {
-                    _control.Disconnect();
+                    _controller.Disconnect();
                 }
-            });
-        }
-
-        public void Join()
-        {
-            _latch.NotifyStartable();
-
-            // Wait for script to finish
-            _latch.AwaitFinished();
+                // avoid compell error. this line should not be called
+                return null;
         }
 
         public void Abort()
         {
             _abortScheduled = true;
+            SendAbortCommand();
             _latch.NotifyAbort();
         }
 
         private void SendAbortCommand()
         {
             AbortCommand abortCommand = new AbortCommand();
-            _control.WriteCommand(abortCommand);
+            _controller.WriteCommand(abortCommand);
+        }
+
+        public void Start()
+        {
+            if (_latch.IsPrepared)
+            {
+                StartCommand startCommand = new StartCommand();
+                _controller.WriteCommand(startCommand);
+            }
+            else
+            {
+                throw new InvalidOperationException("K3po is not ready start");
+            }
+        }
+
+        public void AwaitBarrier(String barrierName)
+        {
+            if (!_barriers.Keys.Contains(barrierName))
+            {
+                throw new ArgumentException(string.Format(
+                        "Barrier with {0} is not present in the script and thus can't be waited upon", barrierName));
+            }
+            CountdownEvent notifiedEvent = new CountdownEvent(1);
+            BarrierStateMachine barrierStateMachine = _barriers[barrierName];
+            barrierStateMachine.AddListener(new AwaitBarrierStateListener(notifiedEvent));
+
+            try
+            {
+                _controller.Await(barrierName);
+            }
+            catch (Exception e)
+            {
+                _latch.NotifyException(e);
+            }
+            notifiedEvent.Wait();
+        }
+
+        public void NotifyBarrier(string barrierName)
+        {
+            if (!_barriers.ContainsKey(barrierName))
+            {
+                throw new ArgumentException(string.Format("Barrier with {0} is not present in the script and thus can't be notified", barrierName));
+            }
+            CountdownEvent notified = new CountdownEvent(1);
+            BarrierStateMachine barrierStateMachine = _barriers[barrierName];
+            barrierStateMachine.AddListener(new NotifyBarrierStateListener(this, barrierName, notified));
+            notified.Wait();
+        }
+
+        public void Dispose()
+        {
+            _controller.Dispose();
+            try
+            {
+                CommandEvent commandEvent = _controller.ReadEvent();
+
+                // ensure it is the correct event
+                switch (commandEvent.EventKind)
+                {
+                    case CommandEvent.Kind.DISPOSED:
+                        _latch.NotifyDisposed();
+                        break;
+                    default:
+                        throw new ArgumentException("Unrecognized event kind: " + commandEvent.EventKind);
+                }
+            }
+            finally
+            {
+                _controller.Disconnect();
+            }
+        }
+
+        class AwaitBarrierStateListener : BarrierStateListener
+        {
+            private CountdownEvent _notifiedEvent;
+            public AwaitBarrierStateListener(CountdownEvent notifiedEvent)
+            {
+                _notifiedEvent = notifiedEvent;
+            }
+
+
+            public void Initial()
+            {
+                // NOOP
+            }
+
+            public void Notifying()
+            {
+                // NOOP
+            }
+
+            public void Notified()
+            {
+                _notifiedEvent.Signal();
+            }
+        }
+
+        class NotifyBarrierStateListener : BarrierStateListener
+        {
+            private CountdownEvent _notifiedEvent;
+            private ScriptRunner _runner;
+            private string _barrierName;
+
+            public NotifyBarrierStateListener(ScriptRunner parent, string barrierName, CountdownEvent notifiedEvent) {
+                _runner = parent;
+                _notifiedEvent = notifiedEvent;
+                _barrierName = barrierName;
+        }
+            public void Initial() {
+                _runner._barriers[_barrierName].Notifying();
+                // Only write to wire once
+                try {
+                    _runner._controller.NotifyBarrier(_barrierName);
+                } catch (Exception e) {
+                    _runner._latch.NotifyException(e);
+                }
+            }
+
+
+            public void Notifying() {
+                // NOOP
+            }
+
+
+            public void Notified() {
+                _notifiedEvent.Signal();
+            }
         }
 
     }

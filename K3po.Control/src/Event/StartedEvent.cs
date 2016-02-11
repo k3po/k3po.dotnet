@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2007-2014 Kaazing Corporation. All rights reserved.
+ * Copyright (c) 2007-2016 Kaazing Corporation. All rights reserved.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -25,9 +25,9 @@ using System.Text;
 
 namespace Kaazing.K3po.Control
 {
-    public class StartedEvent : ControlEvent
+    public class StartedEvent : CommandEvent
     {
-        public override ControlEvent.Kind EventKind
+        public override CommandEvent.Kind EventKind
         {
             get { return Kind.STARTED; }
         }

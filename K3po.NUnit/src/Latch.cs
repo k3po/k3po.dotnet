@@ -1,6 +1,6 @@
 
 /*
- * Copyright (c) 2007-2014 Kaazing Corporation. All rights reserved.
+ * Copyright (c) 2007-2016 Kaazing Corporation. All rights reserved.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -44,6 +44,7 @@ namespace Kaazing.K3po.NUnit
         private CountdownEvent _prepared;
         private CountdownEvent _startable;
         private CountdownEvent _finished;
+        private CountdownEvent _disposed;
 
         public Latch()
         {
@@ -52,6 +53,7 @@ namespace Kaazing.K3po.NUnit
             _prepared = new CountdownEvent(1);
             _startable = new CountdownEvent(1);
             _finished = new CountdownEvent(1);
+            _disposed = new CountdownEvent(1);
         }
 
         public void NotifyPrepared()
@@ -73,6 +75,14 @@ namespace Kaazing.K3po.NUnit
             if (_exception != null)
             {
                 throw _exception;
+            }
+        }
+
+        public bool IsInitState
+        {
+            get
+            {
+                return _state == State.INIT;
             }
         }
 
@@ -145,9 +155,33 @@ namespace Kaazing.K3po.NUnit
             }
         }
 
+        public void NotifyDisposed()
+        {
+            _disposed.Signal();
+        }
+
         public void AwaitFinished()
         {
             _finished.Wait();
+            if (_exception != null)
+            {
+                throw _exception;
+            }
+        }
+
+        public bool AwaitFinished(int timeout)
+        {
+            bool ret = _finished.Wait(timeout);
+            if (_exception != null)
+            {
+                throw _exception;
+            }
+            return ret;
+        }
+
+        public void AwaitDisposed()
+        {
+            _disposed.Wait();
             if (_exception != null)
             {
                 throw _exception;

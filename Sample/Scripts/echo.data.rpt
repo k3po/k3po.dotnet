@@ -1,8 +1,0 @@
-accept tcp://localhost:8000
-accepted
-connected
-
-read "hello world"
-write "hello world"
-
-closed
