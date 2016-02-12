@@ -37,7 +37,6 @@ namespace Kaazing.K3po.NUnit
         private List<BarrierStateListener> stateListeners = new List<BarrierStateListener>();
 
         public void Initial() {
-            Console.WriteLine("Hello");
             lock (this) {
                 this.state = BarrierState.NOTIFYING;
                 foreach (BarrierStateListener listener in stateListeners) {

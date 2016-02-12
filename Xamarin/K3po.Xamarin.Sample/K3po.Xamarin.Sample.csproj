@@ -5,17 +5,19 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{783E787E-8BAD-4F30-BE43-456BA70D90BE}</ProjectGuid>
+    <ProjectGuid>{7E2197D8-8A09-4EA4-914D-029C2AC80B65}</ProjectGuid>
     <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>K3po.Xamarin</RootNamespace>
-    <AssemblyName>K3po.Xamarin</AssemblyName>
+    <RootNamespace>K3po.Xamarin.Sample</RootNamespace>
+    <AssemblyName>K3po.Xamarin.Sample</AssemblyName>
     <FileAlignment>512</FileAlignment>
+    <AndroidApplication>true</AndroidApplication>
     <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
     <TargetFrameworkVersion>v4.4</TargetFrameworkVersion>
+    <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -25,6 +27,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AndroidUseSharedRuntime>True</AndroidUseSharedRuntime>
+    <AndroidLinkMode>None</AndroidLinkMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,56 +37,47 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AndroidUseSharedRuntime>False</AndroidUseSharedRuntime>
+    <AndroidLinkMode>SdkOnly</AndroidLinkMode>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android" />
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
     <Reference Include="Xamarin.Android.NUnitLite" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\K3po.NUnit\src\BarrierStateListener.cs">
-      <Link>src\BarrierStateListener.cs</Link>
-    </Compile>
-    <Compile Include="..\K3po.NUnit\src\BarrierStateMachine.cs">
-      <Link>src\BarrierStateMachine.cs</Link>
-    </Compile>
-    <Compile Include="..\K3po.NUnit\src\K3poRule.cs">
-      <Link>src\K3poRule.cs</Link>
-    </Compile>
-    <Compile Include="..\K3po.NUnit\src\K3poTestFixtureAttribute.cs">
-      <Link>src\K3poTestFixtureAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\K3po.NUnit\src\Latch.cs">
-      <Link>src\Latch.cs</Link>
-    </Compile>
-    <Compile Include="..\K3po.NUnit\src\ScriptPair.cs">
-      <Link>src\ScriptPair.cs</Link>
-    </Compile>
-    <Compile Include="..\K3po.NUnit\src\ScriptRunner.cs">
-      <Link>src\ScriptRunner.cs</Link>
-    </Compile>
+    <Compile Include="MainActivity.cs" />
+    <Compile Include="BarriersIT.cs" />
+    <Compile Include="TcpClientIT.cs" />
+    <Compile Include="TestConstants.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
+    <None Include="Assets\AboutAssets.txt" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\Values\Strings.xml" />
+    <AndroidResource Include="Resources\drawable\Icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\K3po.Control\K3po.Control.csproj">
-      <Project>{4a6999f6-63ea-423e-b968-ad40c9ef67af}</Project>
-      <Name>K3po.Control</Name>
+    <AndroidResource Include="Resources\values\Strings.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\AndroidManifest.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\K3po.Xamarin\K3po.Xamarin.csproj">
+      <Project>{783e787e-8bad-4f30-be43-456ba70d90be}</Project>
+      <Name>K3po.Xamarin</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
+     Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">

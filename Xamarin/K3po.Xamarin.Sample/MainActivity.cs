@@ -18,31 +18,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-using Kaazing.K3po.NUnit;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using Android.App;
+using Android.OS;
+using Xamarin.Android.NUnitLite;
 
-namespace K3po.NUnit.Sample
+namespace K3po.Xamarin.Sample
 {
-    [TestFixture]
-    public class BarriersIT
+    [Activity(Label = "K3po.Xamarin.Sample", MainLauncher = true, Icon = "@drawable/icon")]
+    public class MainActivity : TestSuiteActivity
     {
-        public K3poRule k3po = new K3poRule();
-
-        [Test]
-        [Specification("test.with.barriers")]
-        public void exampleTestWithBarriers()
+        protected override void OnCreate(Bundle bundle)
         {
-            k3po.Start();
-            k3po.AwaitBarrier("HELLO_WORLD");
-            k3po.NotifyBarrier("SEND_RESPONSE");
-            k3po.Finish();
+            // tests can be inside the main assembly
+            AddTest(Assembly.GetExecutingAssembly());
+            // or in any reference assemblies
+            // AddTest (typeof (Your.Library.TestClass).Assembly);
+
+            // Once you called base.OnCreate(), you cannot add more assemblies.
+            base.OnCreate(bundle);
         }
     }
 }
+
