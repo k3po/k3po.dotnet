@@ -131,6 +131,10 @@ namespace Kaazing.K3po.NUnit
                                 abortWritten = true;
                                 SendAbortCommand();
                             }
+                            else
+                            {
+                                throw;
+                            }
                         }
                     }
                 }
