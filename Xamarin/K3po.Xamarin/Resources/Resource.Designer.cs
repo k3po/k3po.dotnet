@@ -9,9 +9,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: global::Android.Runtime.ResourceDesignerAttribute("K3po.Xamarin.Resource", IsApplication=false)]
+[assembly: global::Android.Runtime.ResourceDesignerAttribute("Kaazing.K3po.Xamarin.Resource", IsApplication=false)]
 
-namespace K3po.Xamarin
+namespace Kaazing.K3po.Xamarin
 {
 	
 	

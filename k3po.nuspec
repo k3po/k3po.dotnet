@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Kaazing.K3po</id>
+    <version>4.1.0</version>
+    <authors>Kaazing</authors>
+    <owners>Kaazing</owners>
+    <!--
+    <licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl>
+    <projectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</projectUrl>
+    <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
+	-->
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Kaazing K3po test framework for .NET</description>
+    <releaseNotes>Kaazing K3po test framework for .NET.</releaseNotes>
+    <copyright>Copyright 2016</copyright>
+    <tags>Kaazing K3po</tags>
+    <dependencies>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="K3po.NUnit\bin\Release\Kaazing.K3po.Control.dll" target="lib\net45\Kaazing.K3po.Control.dll" />
+	<file src="K3po.NUnit\bin\Release\Kaazing.K3po.NUnit.dll" target="lib\net45\Kaazing.K3po.NUnit.dll" />
+    <file src="Xamarin\K3po.Xamarin\bin\Release\Kaazing.K3po.Control.dll" target="lib\MonoAndroid\Kaazing.K3po.Control.dll" />
+	<file src="Xamarin\K3po.Xamarin\bin\Release\Kaazing.K3po.Xamarin.dll" target="lib\MonoAndroid\Kaazing.K3po.Xamarin.dll" />
+    <file src="Xamarin\K3po.Xamarin\bin\Release\Kaazing.K3po.Control.dll" target="lib\Xamarin.iOS\Kaazing.K3po.Control.dll" />
+	<file src="Xamarin\K3po.Xamarin\bin\Release\Kaazing.K3po.Xamarin.dll" target="lib\Xamarin.iOS\Kaazing.K3po.Xamarin.dll" />
+    <file src="Xamarin\K3po.Xamarin\bin\Release\Kaazing.K3po.Control.dll" target="lib\MonoTouch\Kaazing.K3po.Control.dll" />
+	<file src="Xamarin\K3po.Xamarin\bin\Release\Kaazing.K3po.Xamarin.dll" target="lib\MonoTouch\Kaazing.K3po.Xamarin.dll" />
+    <file src="WindowsPhone\K3po.WindowsPhone\bin\Release\Kaazing.K3po.Control.dll" target="lib\wp81\Kaazing.K3po.Control.dll" />
+	<file src="WindowsPhone\K3po.WindowsPhone\bin\Release\Kaazing.K3po.WindowsPhone.dll" target="lib\wp81\Kaazing.K3po.WindowsPhone.dll" />
+   </files>
+</package>
