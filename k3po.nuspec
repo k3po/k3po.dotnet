@@ -27,7 +27,7 @@
 	<file src="Xamarin\K3po.Xamarin\bin\Release\Kaazing.K3po.Xamarin.dll" target="lib\Xamarin.iOS\Kaazing.K3po.Xamarin.dll" />
     <file src="Xamarin\K3po.Xamarin\bin\Release\Kaazing.K3po.Control.dll" target="lib\MonoTouch\Kaazing.K3po.Control.dll" />
 	<file src="Xamarin\K3po.Xamarin\bin\Release\Kaazing.K3po.Xamarin.dll" target="lib\MonoTouch\Kaazing.K3po.Xamarin.dll" />
-    <file src="WindowsPhone\K3po.WindowsPhone\bin\Release\Kaazing.K3po.Control.dll" target="lib\wp81\Kaazing.K3po.Control.dll" />
-	<file src="WindowsPhone\K3po.WindowsPhone\bin\Release\Kaazing.K3po.WindowsPhone.dll" target="lib\wp81\Kaazing.K3po.WindowsPhone.dll" />
+    <file src="WindowsPhone\K3po.WindowsPhone\bin\Release\Kaazing.K3po.Control.dll" target="lib\wpa81\Kaazing.K3po.Control.dll" />
+	<file src="WindowsPhone\K3po.WindowsPhone\bin\Release\Kaazing.K3po.WindowsPhone.dll" target="lib\wpa81\Kaazing.K3po.WindowsPhone.dll" />
    </files>
 </package>
