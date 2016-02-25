@@ -9,8 +9,8 @@
     <ProjectGuid>{9D6AD3A0-F327-4FF7-9ED4-BCEE86751D83}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>K3po.WindowsPhone</RootNamespace>
-    <AssemblyName>K3po.WindowsPhone</AssemblyName>
+    <RootNamespace>Kaazing.K3po.WindowsPhone</RootNamespace>
+    <AssemblyName>Kaazing.K3po.WindowsPhone</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformVersion>8.1</TargetPlatformVersion>
     <MinimumVisualStudioVersion>12</MinimumVisualStudioVersion>

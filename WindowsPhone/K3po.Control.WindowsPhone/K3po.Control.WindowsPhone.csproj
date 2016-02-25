@@ -9,8 +9,8 @@
     <ProjectGuid>{4F186F77-2CFC-466C-AD39-B10558DC39C2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>K3po.Control</RootNamespace>
-    <AssemblyName>K3po.Control</AssemblyName>
+    <RootNamespace>Kaazing.K3po.Control</RootNamespace>
+    <AssemblyName>Kaazing.K3po.Control</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformVersion>8.1</TargetPlatformVersion>
     <MinimumVisualStudioVersion>12</MinimumVisualStudioVersion>
@@ -78,9 +78,6 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
-  <ItemGroup>
-    <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-  </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\Command\AbortCommand.cs" />
